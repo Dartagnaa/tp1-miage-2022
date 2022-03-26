@@ -7,7 +7,6 @@ WARNING: NE PAS OUBLIER DE MENTIONNER LES DEUX NOMS SI VOUS ETES EN BINOME!
 
 Maloya BOURSAULT et Océane FAURE
 
-Commentaires éventuels des étudiants : #XXXXXX#
 
 ## Pré-requis 
 
@@ -37,27 +36,31 @@ TIP: [Rappel Git] Trois dépôts sont ici utilisés: le dépot Github de l'ensei
 
 * Observer le code du projet `todolist-debut-ex1`
 
-*Le code est-il structuré en couches ? Quels problèmes ce code peut-il poser ?*
-Le code n'est pas structuré en couche car toutes les sources sont dans le même package ce qui ne permet pas de respecter une structuration en couche.
+*Le code est-il structuré en couches ? Quels problèmes ce code peut-il poser ?*   
+
+Le code n'est pas structuré en couches car toutes les sources sont dans le même package ce qui ne permet pas de respecter une structuration en couche.
 Si cette application vient à grossir, des problèmes utilisateurs peuvent apparaître. 
 
-*Où se trouve le code métier (voir la règle de gestion RG 1) ?*
-Le code métier se trouve dans le controlleur
+*Où se trouve le code métier (voir la règle de gestion RG 1) ?*   
 
-*Cette règle est-elle facilement testable par un test unitaire ?*
-Oui car c'est une comparaison (NB : .plus() = rajout d'un jour)
+Le code métier se trouve dans le controlleur.
+
+*Cette règle est-elle facilement testable par un test unitaire ?*   
+
+Oui car c'est une comparaison (NB : .plus() = rajout d'un jour).
 
 * Lancer une base PostgreSQL en Docker dans un terminal (on lance ici la base en mode interactif pour visualiser son activité. Pour la lancer en tâche de fond, remplacer les options `it` par `d` comme 'daemon'):
 ```bash
 docker run -it -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
 ```
 
-*Expliquer cette ligne de commande (y compris les options utilisées)*
-*docker run* = lancement du docker
-*-d* = lancement en fond de tâche
-*-e* = changer les variabkes d'environnement (ici, on a changé le password) 
-*-p* = port d'accès du postgres
-*postgres* = ici c'est l'image de notre docker
+*Expliquer cette ligne de commande (y compris les options utilisées)*   
+
+* *docker run* : lancement du docker
+* *-d* : lancement en fond de tâche
+* *-e* : changer les variabkes d'environnement (ici, on a changé le password) 
+* *-p* : port d'accès du postgres
+* *postgres* : ici c'est l'image de notre docker
 
 Pour vérifier que notre image est bien en train de tourner, nous pouvons faire 
 ```bash
@@ -69,18 +72,25 @@ docker image ls
     this.todoItemRepository.save(todoItem);
 ```
 
-*Pourquoi `todoItemRepository` est-il `null` ? Quelle est la meilleure façon de l'injecter ?*
-Pour effectuer du couplage faible.
-On va mettre une instance de "repository" dans la classe du contrôleur (@inject)
+*Pourquoi `todoItemRepository` est-il `null` ? Quelle est la meilleure façon de l'injecter ?*   
+
+Pour effectuer du couplage faible. On va mettre une instance de "repository" dans la classe du contrôleur (@Inject)
 
 
 * Modifier le code en conséquence.
 
-
+```bash
+    @Inject
+    public TodoListController(TodoItemRepository todoItemRepository){
+        super();
+        this.todoItemRepository = todoItemRepository
+    }
+```
 
 * Tester vos endpoints avec un client REST.
 (sous insomnia)
 
+Nous avons mis une image de notre test dans images et celle-ci se nomme postOK.PNG
 
 [NOTE]
 ====
@@ -98,11 +108,13 @@ On va mettre une instance de "repository" dans la classe du contrôleur (@inject
 
 NOTE: Pour lancer l'application Spring, selectionner la classe `TodolistApplication` et faire bouton droit -> 'Run as' -> 'Java Application'.
 
+
+
 * Quand le nouveau endpoint fonctionne, commiter, faire un push vers Github et fermer le projet Eclipse (ne pas le supprimer).
 
 * Vérifier avec DBeaver que les donnnées sont bien en base PostgreSQL.
 
-
+Nous avons mis une capture des données dans DBeaver après notre test et la ligne s'est bien insérée (la photo se nomme BDD_Ok.PNG). 
 
 
 
@@ -120,7 +132,8 @@ Source : http://leanpub.com/get-your-hands-dirty-on-clean-architecture[Tom Hombe
   - la couche `application` qui contient tous les contrats : ports (interfaces) et les implémentations des ports d'entrée (ou "use case") et qui servent à orchestrer les entités.
   - la couche `domain` qui contient les entités (au sens DDD, pas au sens JPA). En général des classes complexes (méthodes riches, relations entre les entités)
 
-*Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*
+*Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*   
+
 
 "L'architecture hexagonale décompose un système en plusieurs composants interchangeables.[...] Chaque composant est connecté aux autres par l'intermédiaire de «ports» qui représentent un canal de communication. La communication via ces ports suit un protocole qui dépend de l'objectif de l'interaction. Les ports et les protocoles définissent une interface de programmation applicative (API) abstraite, qui peut être mise en œuvre par tout moyen technique approprié" Wikipedia.
 En clair, ça permet d'éviter de mélanger le technique et le métier. Cela simplifie les tests.
@@ -130,9 +143,11 @@ Compléter ce code avec une fonctionnalité de création de `TodoItem`  persist�
 * prend un `TodoItem` au format JSON dans le body (voir exemple de contenu plus haut);
 * renvoie un code `201` en cas de succès. 
 
-Etape 1 : Dans TodoitemPersistanceAdapter.java => ajout d'une méthode storeNewTodoItem(TodoItem item) qui créé un item en appelant la méthode "save" du Repository.Il est nécessaire de mapper l'item mis en paramètre de la nouvelle méthode lorsqu'on appelle le .save()
-Etape 2 : Dans AddTodoItemService.java => ajouter une méthode addTodoItem(TodoItem item) qui nous permet d'appeler notre méthode storeNewTodoItem() en passant par l'interface UpdateTodoItem.
-Etape 3 : Dans le contrôleur => Ajout d'une instance de notre classe AddTodoItem et ajout d'une méthode "post" avec l'url "/todos" sans oublier le "@ResponseStatus(code=HttpStatus.CREATED)". Cette méthode "ajouterItem" comprends en paramètre un body "item" de type TodoItem et elle appelle notre méthode "addTodoItem" de l'interface "AddTodoItem".
+Etape 1 : Dans TodoitemPersistanceAdapter.java => ajout d'une méthode storeNewTodoItem(TodoItem item) qui créé un item en appelant la méthode "save" du Repository.Il est nécessaire de mapper l'item mis en paramètre de la nouvelle méthode lorsqu'on appelle le .save()   
+
+Etape 2 : Dans AddTodoItemService.java => ajouter une méthode addTodoItem(TodoItem item) qui nous permet d'appeler notre méthode storeNewTodoItem() en passant par l'interface UpdateTodoItem.   
+
+Etape 3 : Dans le contrôleur => Ajout d'une instance de notre classe AddTodoItem et ajout d'une méthode "post" avec l'url "/todos" sans oublier le "@ResponseStatus(code=HttpStatus.CREATED)". Cette méthode "ajouterItem" comprends en paramètre un body "item" de type TodoItem et elle appelle notre méthode "addTodoItem" de l'interface "AddTodoItem".   
 
 La fonctionnalité à implémenter est contractualisée par le port d'entrée `AddTodoItem`.
 
@@ -141,17 +156,30 @@ _Temps estimé : 20 mins_
 
 * Rester sur le même code que l'exercice 2
 
-* Implémenter (en junit) des TU sur la règle de gestion qui consiste à afficher `[LATE!]` dans la description d'un item en retard de plus de 24h.
-test late : 
+* Implémenter (en junit) des TU sur la règle de gestion qui consiste à afficher `[LATE!]` dans la description d'un item en retard de plus de 24h.   
 
-*Quels types de tests devra-t-on écrire pour les adapteurs ?* 
-test d'intégrations :
+Nous avons rédigé deux tests pour tester la fonction finalContent() :  
+
+* Le premier teste l'affichage du "[LATE!]" quand l'item a plus de 24h, la fonction devrait renvoyé "[LATE!] ..". Nous avons donc créé un item avec l'attribut time réduit de 25h en partant de l'heure actuelle et un attribut content égal à "test". Puis nous avons fait un assertEquals pour vérifier que l'affichage après l'appel de finalContent() sur l'item créé est bien égale à "[LATE!] test".
+
+* Le second teste l'affichage du content sans le "[LATE!]". Pour cela, nous avons créé un item avec l'attribut time égal à la date et l'heure actuel ainsi qu'un content égal à "test". Comme l'item n'a pas de retard, la fonction doit retourner seulement "test". Nous avons donc fait un assertEquals pour vérifier que l'affichage après l'appel de finalContent() sur l'item créé est bien égale à "test".
+
+*Quels types de tests devra-t-on écrire pour les adapteurs ?*    
+
+Il sera nécessaire d'écrire des tests d'intégration.
 
 
-*Que teste-on dans ce cas ?*
-On regarde l'API.
+*Que teste-on dans ce cas ?*   
 
-*S'il vous reste du temps, écrire quelques uns de ces types de test.*
+On teste que l'API fonctionne correctement. 
+
+*S'il vous reste du temps, écrire quelques uns de ces types de test.*   
+
+Nous avons rédiger deux tests. Un qui test que l'on peut récupérer la liste de tous les TodoItem et un autre qui test que l'on peut créer un TodoItem.   
+
+* Pour le test qui récupère la liste des TodoItem : on a fait un test sur le controller où l'on appelle le Service getTodoItems et on vérifie que cela retourne bien la liste des items que l'on créé dans le test. On y vérifie que le status est bien OK (200), puis que identifiants du 2nd et dernier de la liste ont bien les valeurs prévues. Ou encore qu'il y a bien un identifiant pour tous les items de la liste.
+* Pour le second test qui teste l'ajout d'un item, nous avons eu plus de difficultés. Tout d'abord la fonction addTodoItem est une fonction void donc nous avons utiliser doNothing pour dire qu'elle ne retourne rien. Après cela, nous avons fait le post avec l'url puis nous avons fait un .content où l'on y met l'item créé que l'on converti en json avec une fonction. Puis un .contentType pour dire que le contenu est du json. Enfin, on vérifie que le statut est 200, que l'identifiant existe et que le contenu est bien "test". Cependant, nous avons un status 400, le body n'est pas présent dans la requête et nous ne comprenons pas pourquoi.
+
 
 [TIP]
 =====
