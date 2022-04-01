@@ -5,7 +5,7 @@ NOTE: TP de trois slots de 1h20
 ## Nom du(des) étudiant(e)(s) de ce monôme/binôme 
 WARNING: NE PAS OUBLIER DE MENTIONNER LES DEUX NOMS SI VOUS ETES EN BINOME!
 
-#XXX# (et #YYY#)
+Maloya BOURSAULT et Océane FAURE
 
 Commentaires éventuels des étudiants : #XXXXXX#
 
