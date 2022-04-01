@@ -122,10 +122,16 @@ Source : http://leanpub.com/get-your-hands-dirty-on-clean-architecture[Tom Hombe
 
 *Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*
 
+"L'architecture hexagonale décompose un système en plusieurs composants interchangeables.[...] Chaque composant est connecté aux autres par l'intermédiaire de «ports» qui représentent un canal de communication. La communication via ces ports suit un protocole qui dépend de l'objectif de l'interaction. Les ports et les protocoles définissent une interface de programmation applicative (API) abstraite, qui peut être mise en œuvre par tout moyen technique approprié" Wikipedia.
+
 Compléter ce code avec une fonctionnalité de création de `TodoItem`  persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
 
 * prend un `TodoItem` au format JSON dans le body (voir exemple de contenu plus haut);
 * renvoie un code `201` en cas de succès. 
+
+Etape 1 : Dans TodoitemPersistanceAdapter.java => ajout d'une méthode storeNewTodoItem(TodoItem item) qui créé un item en appelant la méthode "save" du Repository.Il est nécessaire de mapper l'item mis en paramètre de la nouvelle méthode lorsqu'on appelle le .save()
+Etape 2 : Dans AddTodoItemService.java => ajouter une méthode addTodoItem(TodoItem item) qui nous permet d'appeler notre méthode storeNewTodoItem() en passant par l'interface UpdateTodoItem.
+Etape 3 : Dans le contrôleur => Ajout d'une instance de notre classe AddTodoItem et ajout d'une méthode "post" avec l'url "/todos" sans oublier le "@ResponseStatus(code=HttpStatus.CREATED)". Cette méthode "ajouterItem" comprends en paramètre un body "item" de type TodoItem et elle appelle notre méthode "addTodoItem" de l'interface "AddTodoItem".
 
 La fonctionnalité à implémenter est contractualisée par le port d'entrée `AddTodoItem`.
 
