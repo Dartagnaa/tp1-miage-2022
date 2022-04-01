@@ -123,6 +123,7 @@ Source : http://leanpub.com/get-your-hands-dirty-on-clean-architecture[Tom Hombe
 *Rappeler en quelques lignes les grands principes de l'architecture hexagonale.*
 
 "L'architecture hexagonale décompose un système en plusieurs composants interchangeables.[...] Chaque composant est connecté aux autres par l'intermédiaire de «ports» qui représentent un canal de communication. La communication via ces ports suit un protocole qui dépend de l'objectif de l'interaction. Les ports et les protocoles définissent une interface de programmation applicative (API) abstraite, qui peut être mise en œuvre par tout moyen technique approprié" Wikipedia.
+En clair, ça permet d'éviter de mélanger le technique et le métier. Cela simplifie les tests.
 
 Compléter ce code avec une fonctionnalité de création de `TodoItem`  persisté en base et appelé depuis un endpoint REST `POST /todos` qui :
 
@@ -141,10 +142,14 @@ _Temps estimé : 20 mins_
 * Rester sur le même code que l'exercice 2
 
 * Implémenter (en junit) des TU sur la règle de gestion qui consiste à afficher `[LATE!]` dans la description d'un item en retard de plus de 24h.
+test late : 
 
 *Quels types de tests devra-t-on écrire pour les adapteurs ?* 
+test d'intégrations :
+
 
 *Que teste-on dans ce cas ?*
+On regarde l'API.
 
 *S'il vous reste du temps, écrire quelques uns de ces types de test.*
 
