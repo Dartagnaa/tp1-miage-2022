@@ -90,6 +90,8 @@ Pour effectuer du couplage faible. On va mettre une instance de "repository" dan
 * Tester vos endpoints avec un client REST.
 (sous insomnia)
 
+Nous avons mis une image de notre test dans images et celle-ci se nomme postOK.PNG
+
 [NOTE]
 ====
 * Les URL des endpoints sont renseignées dans le contrôleur via les annotation `@...Mapping` 
@@ -112,7 +114,7 @@ NOTE: Pour lancer l'application Spring, selectionner la classe `TodolistApplicat
 
 * Vérifier avec DBeaver que les donnnées sont bien en base PostgreSQL.
 
-
+Nous avons mis une capture des données dans DBeaver après notre test et la ligne s'est bien insérée (la photo se nomme BDD_Ok.PNG). 
 
 
 
