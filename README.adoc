@@ -176,7 +176,10 @@ On teste que l'API fonctionne correctement.
 *S'il vous reste du temps, écrire quelques uns de ces types de test.*   
 
 Nous avons rédiger deux tests. Un qui test que l'on peut récupérer la liste de tous les TodoItem et un autre qui test que l'on peut créer un TodoItem.   
-Pour le test qui récupère la liste des TodoItem : on a fait un test sur le controller où l'on appelle le Service getTodoItems et on vérifie que cela retourne bien 
+
+* Pour le test qui récupère la liste des TodoItem : on a fait un test sur le controller où l'on appelle le Service getTodoItems et on vérifie que cela retourne bien la liste des items que l'on créé dans le test. On y vérifie que le status est bien OK (200), puis que identifiants du 2nd et dernier de la liste ont bien les valeurs prévues. Ou encore qu'il y a bien un identifiant pour tous les items de la liste.
+* Pour le second test qui teste l'ajout d'un item, nous avons eu plus de difficultés. Tout d'abord la fonction addTodoItem est une fonction void donc nous avons utiliser doNothing pour dire qu'elle ne retourne rien. Après cela, nous avons fait le post avec l'url puis nous avons fait un .content où l'on y met l'item créé que l'on converti en json avec une fonction. Puis un .contentType pour dire que le contenu est du json. Enfin, on vérifie que le statut est 200, que l'identifiant existe et que le contenu est bien "test". Cependant, nous avons un status 400, le body n'est pas présent dans la requête et nous ne comprenons pas pourquoi.
+
 
 [TIP]
 =====
