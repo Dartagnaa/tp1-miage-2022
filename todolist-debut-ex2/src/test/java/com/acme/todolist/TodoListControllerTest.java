@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,6 +25,7 @@ import com.acme.todolist.application.port.in.AddTodoItem;
 import com.acme.todolist.application.port.in.GetTodoItems;
 import com.acme.todolist.domain.TodoItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.annotation.PostConstruct;
 
 
 @WebMvcTest(controllers = TodoListController.class)
@@ -37,7 +40,16 @@ public class TodoListControllerTest {
 	
 	@MockBean
 	private AddTodoItem addTodoItem;
-	/*
+
+	private ObjectMapper mapper = new ObjectMapper();
+
+	@PostConstruct
+	void init() {
+		mapper.registerModule(new JavaTimeModule());
+		mapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		mapper.disable(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS);
+	}
+
 	@Test
 	public void should_fetch_all_todo_items() throws Exception{
 		List<TodoItem> listItem = mockTodoItem("u",Instant.now(),"test");
@@ -51,7 +63,7 @@ public class TodoListControllerTest {
 		.andExpect(jsonPath("$[9].id").value("u9"))
 		.andExpect(jsonPath("$[0]").exists())
 		.andExpect(jsonPath("$[*].id").isNotEmpty());
-	}*/
+	}
 	
 	@Test
 	public void should_not_fetch_all_todo_items() throws Exception{
@@ -62,25 +74,22 @@ public class TodoListControllerTest {
 		.andExpect(status().isOk());
 	}
 	
-	/*
+
 	@Test
 	public void should_add_item() throws Exception{
 		TodoItem item = mockTodoItem("u",Instant.now(),"test").get(0);
-		
 		doNothing().when(addTodoItem).addTodoItem(item);
-		
 		mockMvc.perform(
 				MockMvcRequestBuilders.post("/todos")
 				.content(asJsonString(item))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().isOk())
-		.andExpect(jsonPath("$.id").exists())
-		.andExpect(jsonPath("$.content").value("test"));
-	}*/
+		.andExpect(status().isCreated());
+
+	}
 	
-	public static String asJsonString(final Object obj) {
+	public String asJsonString(final Object obj) {
 		try {
-			return new ObjectMapper().writeValueAsString(obj);
+			return mapper.writeValueAsString(obj);
 		}catch(Exception e) {
 			throw new RuntimeException(e);
 		}
